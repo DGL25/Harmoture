@@ -10,13 +10,15 @@ export const styles = StyleSheet.create({
         color: '#fff',
         fontSize:31, fontFamily: 'Montserrat_700Bold',
         textShadowColor: 'rgba(0,0,0,.5)',textShadowOffset: {width: 0, height: 2.5}, textShadowRadius: 5,
+        width: '100%',
+        borderRadius: 5
     },
     tablature:{
         color: '#fff', 
         fontSize: 16, fontFamily: 'Montserrat_300Light',
         padding:15,
         height: '100%',
-        textAlignVertical: 'top'
+        textAlignVertical: 'top',
     },
     areaBtns:{
         width: '100%',height: 45,

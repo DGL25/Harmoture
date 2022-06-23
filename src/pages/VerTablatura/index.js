@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { View, SafeAreaView, TouchableOpacity, Text, TextInput } from 'react-native';
+import { View, SafeAreaView, TouchableOpacity, Text, TextInput, ScrollView } from 'react-native';
 import { styles } from './styleVerTablatura';
+import uuid from 'react-native-uuid';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
@@ -29,32 +30,35 @@ export default function VerTablatura() {
   }, [])
 
   async function userEdit (param){
-    if(param){
-        let response = await getItem()
-        let data = response ? JSON.parse(response) : []
-        
-        data.forEach(element => {
-          if(element.id === infoTab.id){
-            element.title = titulo
-            element.tablature = tablatura
+    if(titulo !== infoTab.title || tablatura !== infoTab.tablature){
+      if(param){
+        const id = uuid.v4()
 
-            console.log(element)
-          }
-        });
-    }else{
-      setTitulo(infoTab.title)
-      setTablatura(infoTab.tablature)
+        const response = await getItem()
+        const previousData = response ? JSON.parse(response) : []
+    
+        const data = previousData.filter(tablatures => tablatures.id !== infoTab.id)
+        data.push({
+          id,
+          title: titulo,
+          tablature : tablatura
+        })
+        setItem(JSON.stringify(data))
+      }else{
+        setTitulo(infoTab.title)
+        setTablatura(infoTab.tablature)
+      }
     }
   }
   
   return (
     <SafeAreaView style={styles.container}>
 
-      <TextInput value={titulo} editable={editavel} style={styles.title} numberOfLines={1} multiline onChangeText={(t)=> setTitulo(t)}/>
+      <TextInput value={titulo} editable={editavel} style={[styles.title, {backgroundColor: editavel ? '#383E56' : 'transparent', paddingHorizontal: editavel ? 5 : 0}]} numberOfLines={2} multiline onChangeText={(t)=> setTitulo(t)}/>
 
-      <View style={{flex: 1, backgroundColor: '#383E56', width: '100%', borderRadius: 5, marginVertical: 25}}>
+      <ScrollView style={{flex: 1, backgroundColor: '#383E56', width: '100%', borderRadius: 5, marginVertical: 5,}}>
         <TextInput value={tablatura} editable={editavel} style={styles.tablature} multiline onChangeText={(t)=> setTablatura(t)}/>
-      </View>
+      </ScrollView>
 
       {
         editavel ? (
